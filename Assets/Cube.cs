@@ -30,7 +30,7 @@ public class Cube : MonoBehaviour
             {
                 Cube cube = Instantiate(this, transform.position, transform.rotation);
 
-                cube.Options(cube);
+                cube.Init();
 
                 _explosion.Explode();
             }
@@ -42,10 +42,10 @@ public class Cube : MonoBehaviour
         }
     }
 
-    public void Options(Cube cube)
+    public void Init()
     {
         Vector3 scale = transform.localScale / _decreaseNumber;
-        cube.transform.localScale = scale;
+        transform.localScale = scale;
         _meshRenderer.material.color = Random.ColorHSV();
     }
 }
