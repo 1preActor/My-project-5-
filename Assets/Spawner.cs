@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Cube : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private Explosion _explosion;
@@ -13,8 +13,8 @@ public class Cube : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Destroy(gameObject);
         CreateCube();
+        Destroy(gameObject);
     }
 
     private void CreateCube()
@@ -24,22 +24,22 @@ public class Cube : MonoBehaviour
 
         if (_separationChance >= random)
         {
-            _separationChance /= _decreaseNumber;
 
             for (int i = 0; i < quantity; i++)
             {
-                Cube cube = Instantiate(this, transform.position, transform.rotation);
+                Spawner spawn = Instantiate(this, transform.position, transform.rotation);
 
-                cube.Init();
+                spawn.Init();
 
                 _explosion.Explode();
             }
-
         }
         else
         {
             _explosion.Explode();
         }
+
+        _separationChance /= _decreaseNumber;
     }
 
     public void Init()
