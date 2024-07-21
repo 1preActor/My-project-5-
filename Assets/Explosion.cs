@@ -1,28 +1,41 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Explosion : MonoBehaviour
+public class Exploder : MonoBehaviour
 {
-    [SerializeField] private float _radiusExplosian;
-    [SerializeField] private float _forceExplosian;
+    [SerializeField] private float _explosionRadius = 25f;
+    [SerializeField] private float _explosionForce = 1000f;
+    [SerializeField] private ParticleSystem _effect;
 
-    public void Explode()
+    private void OnMouseDown()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, _radiusExplosian);
-
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            Rigidbody rigidbody = colliders[i].attachedRigidbody;
-
-            if (rigidbody)
-            {
-                rigidbody.AddExplosionForce(_forceExplosian, transform.position, _radiusExplosian);
-            }
-        }
+        Explode();
     }
 
-    private void OnDrawGizmos()
+    private void Explode()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _radiusExplosian);
+        foreach (Rigidbody expodableObject in GetExplodableObjects())
+        {
+            expodableObject.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+        }
+
+        Destroy(gameObject);
+    }
+
+    private List<Rigidbody> GetExplodableObjects()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, _explosionRadius);
+
+        List<Rigidbody> objectsToExplode = new();
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.attachedRigidbody != null)
+            {
+                objectsToExplode.Add(hit.attachedRigidbody);
+            }
+        }
+
+        return objectsToExplode;
     }
 }
