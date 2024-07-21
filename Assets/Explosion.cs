@@ -5,7 +5,6 @@ public class Exploder : MonoBehaviour
 {
     [SerializeField] private float _explosionRadius = 25f;
     [SerializeField] private float _explosionForce = 1000f;
-    [SerializeField] private ParticleSystem _effect;
 
     private void OnMouseDown()
     {
