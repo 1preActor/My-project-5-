@@ -1,53 +1,47 @@
 using UnityEngine;
 
-class Spawner : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
-    [SerializeField] private int _minInstantiateChance = 2;
-    [SerializeField] private int _maxInstantiateChance = 6;
-    [SerializeField] private int _chanceToDivide = 100;
-    [SerializeField] private GameObject _cube;
-    [SerializeField] private Color[] _colors;
+    [SerializeField] private MeshRenderer _meshRenderer;
+    [SerializeField] private Explosion _explosion;
 
-    private int _minDivideChance = 0;
-    private int _maxDivideChance = 100;
+    private int _decreaseNumber = 2;
+    private int _minInstantiateChance = 2;
+    private int _maxInstantiateChance = 6;
+    private int _randomMaxValue = 100;
+    private int _chanceToDivide = 50;
+    private float _scaleMultiplier = 0.5f;
     private int _randomChanceToDivide;
     private int _randomChanceToInstantiate;
-    private float _scaleMultiplier = 0.5f;
-    private MeshRenderer _meshRenderer;
-    private int _randomColor;
-    private int _minColorNumber = 0;
 
     private void OnMouseDown()
     {
-        SpawnDividedObjects();
+        Destroy(gameObject);
+        SpawnCubes();
     }
 
-    private void Awake()
+    private void SpawnCubes()
     {
-        _meshRenderer = gameObject.GetComponent<MeshRenderer>();
-    }
-
-    private void SpawnDividedObjects()
-    {
-        _randomChanceToDivide = Random.Range(_minDivideChance, _maxDivideChance);
-
+        _randomChanceToDivide = Random.Range(0, _randomMaxValue);
+        
         if (_randomChanceToDivide <= _chanceToDivide)
         {
             _randomChanceToInstantiate = Random.Range(_minInstantiateChance, _maxInstantiateChance);
             transform.localScale *= _scaleMultiplier;
-            _chanceToDivide /= 2;
+            _chanceToDivide /= _decreaseNumber;
+            _explosion.CorrectionExplode();
 
             for (int i = 0; i < _randomChanceToInstantiate; i++)
             {
-                MeshRenderer renderer = Instantiate(_meshRenderer, transform.position, Quaternion.identity);
-                SetObjectColor(renderer);
+                Instantiate(this, transform.position, Quaternion.identity);
+                SetObject();
             }
+        }
+        else
+        {
+            _explosion.Explode();
         }
     }
 
-    private void SetObjectColor(MeshRenderer meshRenderer)
-    {
-        _randomColor = Random.Range(_minColorNumber, _colors.Length);
-        meshRenderer.material.color = _colors[_randomColor];
-    }
+    private void SetObject() => _meshRenderer.material.color = Random.ColorHSV();    
 }

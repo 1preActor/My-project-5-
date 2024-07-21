@@ -1,40 +1,36 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Exploder : MonoBehaviour
+public class Explosion : MonoBehaviour
 {
-    [SerializeField] private float _explosionRadius = 25f;
-    [SerializeField] private float _explosionForce = 1000f;
-
-    private void OnMouseDown()
+    [SerializeField] private float _radiusExplosian;
+    [SerializeField] private float _forceExplosian;
+    
+    public void Explode()
     {
-        Explode();
-    }
+        Collider[] colliders = Physics.OverlapSphere(transform.position, _radiusExplosian);
 
-    private void Explode()
-    {
-        foreach (Rigidbody expodableObject in GetExplodableObjects())
+        for (int i = 0; i < colliders.Length; i++)
         {
-            expodableObject.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
-        }
+            Rigidbody rigidbody = colliders[i].attachedRigidbody;
 
-        Destroy(gameObject);
-    }
-
-    private List<Rigidbody> GetExplodableObjects()
-    {
-        Collider[] hits = Physics.OverlapSphere(transform.position, _explosionRadius);
-
-        List<Rigidbody> objectsToExplode = new();
-
-        foreach (Collider hit in hits)
-        {
-            if (hit.attachedRigidbody)
+            if (rigidbody)
             {
-                objectsToExplode.Add(hit.attachedRigidbody);
+                rigidbody.AddExplosionForce(_forceExplosian, transform.position, _radiusExplosian);
             }
         }
+    }
 
-        return objectsToExplode;
+    public void CorrectionExplode() => SetExplode();
+
+    private void SetExplode()
+    {
+        _radiusExplosian *= 2;
+        _forceExplosian *= 2;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _radiusExplosian);
     }
 }
