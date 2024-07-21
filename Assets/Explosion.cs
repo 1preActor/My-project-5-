@@ -29,7 +29,7 @@ public class Exploder : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
-            if (hit.attachedRigidbody != null)
+            if (hit.attachedRigidbody)
             {
                 objectsToExplode.Add(hit.attachedRigidbody);
             }
