@@ -27,10 +27,4 @@ public class Explosion : MonoBehaviour
         _radiusExplosian *= 2;
         _forceExplosian *= 2;
     }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _radiusExplosian);
-    }
 }
